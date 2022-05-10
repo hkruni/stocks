@@ -1,0 +1,163 @@
+{% extends "admin/bases.html" %}
+
+{% block content %}
+
+<form class="layui-form" lay-filter="form1" id="form1" style="display: none" >
+  <div class="layui-form-item">
+    <label class="layui-form-label">股票代码</label>
+    <div class="layui-input-block">
+      <input type="text" name="code" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" id="code">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">股票名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+    </div>
+  </div>
+</form>
+
+
+<div id="toolbarDemo" style="display:none">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+  </div>
+</div>
+
+<table  id="test" lay-filter="stocktable"></table>
+
+<!--<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+  </div>
+</script>-->
+
+<script type="text/html" id="operation">
+    <a class="layui-btn layui-btn-xs" lay-event="dongfang" >东方财富</a>
+    <a class="layui-btn layui-btn-xs" lay-event="detail" >详情</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="update">更新</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+  layui.use('table', function(){
+
+      var table = layui.table
+      table.render({
+          elem: '#test'
+          ,toolbar: '#toolbarDemo'
+          ,height: 400
+          ,url: '/stocks/stockInfos'
+          ,page : {
+             layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+           },
+        cols: [[ //表头
+           {field: 'id', title: '序号', width:80, sort: true, fixed: 'left', type:'numbers'}
+          ,{field: 'code', title: '股票代码', width:120}
+          ,{field: 'name', title: '股票名称', width:120}
+          ,{field: 'price', title: '价格', width:120,edit: 'text'}
+          ,{field: 'pe', title: '市盈率', width: 120, sort: true,edit: 'text'}
+          ,{field: 'pb', title: '市净率', width: 120, sort: true,edit: 'text'}
+          ,{field: 'chanliang', title: '产量（万吨）', width: 120, sort: true,edit: 'text'}
+          ,{field: 'channeng', title: '产能（万吨）', width: 120, sort: true,edit: 'text'}
+          ,{fixed: 'right', title: '操作', toolbar: '#operation', width:300}
+        ]],
+      });
+
+        //头工具栏事件
+      table.on('toolbar(stocktable)', function(obj){
+            layer.open({
+                type: 1,
+                // content:'http://localhost:5050/stocks/stockform/',
+                content:$('#form1'),
+                skin: 'layui-layer-rim', //加上边框
+                area: ['370px', '360px'], //宽高
+                btn: ['添加','取消'],
+                yes: function (layero,index) {
+                    formData = layui.form.val("form1");
+                    $.ajax({
+                        url:"/stocks/addStock",
+                        data:formData,
+                        method:'post',
+                        "Content-Type": "application/json;charset=utf8",
+                        dataType:"json",
+                        success:function(data){
+                            if (data.status == 'ok') {
+                                layer.msg('添加成功');
+                            }
+                            layer.closeAll();
+                            table.reload('test', {});
+                        },
+                        error:function(data){
+                            layer.alert(JSON.stringify(data), {
+                                title: data
+                            });
+                         }
+                     });
+
+                }
+
+                })
+      });
+
+      table.on('tool(stocktable)', function(obj){
+        var data = obj.data;
+        if(obj.event === 'del'){
+          layer.confirm('真的删除行么', function(index){
+              $.ajax({
+                url:"/stocks/deleteStock",
+                data:{'code':data.code},
+                method:'post',
+                "Content-Type": "application/json;charset=utf8",
+                dataType:"json",
+                success:function(data){
+                    if (data.status == 'ok') {
+                        layer.msg('删除成功');
+                        table.reload('test', {});
+                    }
+                },
+                error:function(data){
+                    layer.alert(JSON.stringify(data), {
+                        title: data
+                    });
+                 }
+            });
+            obj.del();
+            layer.close(index);
+          });
+        } else if(obj.event === 'update'){
+              $.ajax({
+                url:"/stocks/updateStock",
+                data:data,
+                method:'post',
+                "Content-Type": "application/json;charset=utf8",
+                dataType:"json",
+                success:function(data){
+                    if (data.status == 'ok') {
+                        layer.msg('更新成功');
+                        table.reload('test', {});
+                    }
+                },
+                error:function(data){
+                    layer.alert(JSON.stringify(data), {
+                        title: data
+                    });
+                 }
+            });
+        }else if(obj.event === 'detail'){
+            window.location.href ="http://localhost:5050/stocks/stockDetail/" + data.code + "/" + data.name;
+        }else if(obj.event === 'dongfang'){
+            window.open("https://emweb.securities.eastmoney.com/PC_HSF10/BusinessAnalysis/Index?type=web&code=sh600893", "_blank");
+            // parent.location.href ="https://emweb.securities.eastmoney.com/PC_HSF10/BusinessAnalysis/Index?type=web&code=sh600893"
+        }
+     });
+
+
+
+  });
+
+</script>
+
+
+
+{% endblock %}

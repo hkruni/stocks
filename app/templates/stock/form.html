@@ -1,0 +1,19 @@
+{% extends "admin/bases.html" %}
+
+{% block content %}
+<form class="layui-form" action="" id="form1">
+  <div class="layui-form-item">
+    <label class="layui-form-label">股票代码</label>
+    <div class="layui-input-block">
+      <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" id="code">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">股票名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+    </div>
+  </div>
+</form>
+
+{% endblock %}

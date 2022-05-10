@@ -1,0 +1,29 @@
+
+{% extends "admin/bases.html" %}
+ {% import "admin/fy.html" as pg %}
+{% block content %}
+<br/>
+<div id="code" d="{{stock.code}}" style="display:none"></div>
+<div id="name" d="{{stock.name}}" style="display:none"></div>
+<div id="content"  d="{{stock.content}}" style="display:none"></div>
+<button class="layui-btn layui-btn-sm edit">编辑修改</button>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+  <div id="contents"></div>
+</fieldset>
+
+
+<script>
+    $ = layui.jquery;
+    // var  content = document.getElementById('content').getAttribute('d');
+    var  content = $('#content').attr('d');
+
+    $('#contents').html(content)
+
+    $('.edit').on('click', function(){
+        var  code = $('#code').attr('d');
+        var  name = $('#name').attr('d');
+        // window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name;
+        window.location.href ="http://localhost:5050/static/stocks/stockContentEdit/" + code + "/" + name;
+     });
+</script>
+{% endblock %}
