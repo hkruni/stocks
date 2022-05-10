@@ -84,9 +84,15 @@ def updateStock():
     stock.code = code;
 
     extend = MeiTanExtend.query.filter_by(code=code).first();
-    extend.chanliang = chanliang;
-    extend.channeng = channeng;
-
+    if extend is not None :
+        extend.chanliang = chanliang;
+        extend.channeng = channeng;
+    else :
+        extend = MeiTanExtend(
+            code=code,
+            chanliang=chanliang,
+            channeng=channeng
+        )
 
     db.session.add(stock);
     db.session.add(extend);
