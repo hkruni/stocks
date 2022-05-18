@@ -17,6 +17,8 @@ class StockDetail(db.Model):
     code = db.Column(db.String(6))
     name = db.Column(db.String(6))
     content = db.Column(db.String)
+    title = db.Column(db.String)
+    seq = db.Column(db.String)
 
 class MeiTanExtend(db.Model):
     __tablename__ = 'sa_maitan_extend'

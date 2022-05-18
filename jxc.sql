@@ -1,404 +1,115 @@
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : localhost
+Source Server Version : 50624
+Source Host           : localhost:3306
+Source Database       : sale
+
+Target Server Type    : MYSQL
+Target Server Version : 50624
+File Encoding         : 65001
+
+Date: 2022-05-18 22:37:36
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for client
+-- Table structure for sa_maitan_extend
 -- ----------------------------
-DROP TABLE IF EXISTS `client`;
-CREATE TABLE `client`  (
-  `client_id` int(11) NOT NULL AUTO_INCREMENT,
-  `client_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `client_addre` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `client_phone` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `client_credit` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`client_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `sa_maitan_extend`;
+CREATE TABLE `sa_maitan_extend` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` char(8) DEFAULT NULL,
+  `chanliang` int(11) DEFAULT NULL,
+  `channeng` int(11) DEFAULT NULL,
+  `beizhu` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Records of client
+-- Records of sa_maitan_extend
 -- ----------------------------
-INSERT INTO `client` VALUES (1, '杨鑫', '安徽蚌埠市', '18654211254 ', 4);
-INSERT INTO `client` VALUES (2, '胡悦', '贵州贵阳市', '13985461125 ', 5);
-INSERT INTO `client` VALUES (3, '刘佳', '山东日照市', '19954125412 ', 5);
-INSERT INTO `client` VALUES (4, '赵兴', '北京', '18515699985 ', 3);
-INSERT INTO `client` VALUES (5, '孙丽', '安徽马鞍山市', '15212369854 ', 5);
-INSERT INTO `client` VALUES (6, '李梅', '河北廊坊市', '13785466511 ', 5);
-INSERT INTO `client` VALUES (7, '马瑞', '广东深圳市', '13425169877 ', 2);
-INSERT INTO `client` VALUES (8, '杨欣', '山东日照市', '11000000000', 1);
-INSERT INTO `client` VALUES (9, '刘旭', '山东日照市', '110', 2);
-INSERT INTO `client` VALUES (10, '李烈', '山东日照市', '112', 4);
+INSERT INTO `sa_maitan_extend` VALUES ('1', '000001', '45', '78', null);
+INSERT INTO `sa_maitan_extend` VALUES ('2', 'sh600893', '12', '34', null);
 
 -- ----------------------------
--- Table structure for duty
+-- Table structure for sa_meitanextend
 -- ----------------------------
-DROP TABLE IF EXISTS `duty`;
-CREATE TABLE `duty`  (
-  `duty_id` int(11) NOT NULL AUTO_INCREMENT,
-  `duty_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `duty_addtime` datetime(0) NULL DEFAULT NULL,
-  `duty_is_true` tinyint(1) NULL DEFAULT NULL,
-  PRIMARY KEY (`duty_id`) USING BTREE,
-  UNIQUE INDEX `duty_name`(`duty_name`) USING BTREE,
-  INDEX `ix_duty_duty_addtime`(`duty_addtime`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `sa_meitanextend`;
+CREATE TABLE `sa_meitanextend` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` char(8) DEFAULT NULL,
+  `chaineng` float DEFAULT NULL,
+  `chailiang` float DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Records of duty
+-- Records of sa_meitanextend
 -- ----------------------------
-INSERT INTO `duty` VALUES (1, '管理员', '2018-11-08 19:00:56', 0);
-INSERT INTO `duty` VALUES (2, '普通员工', '2018-11-08 19:00:56', 0);
-INSERT INTO `duty` VALUES (4, '部门经理', '2018-11-09 13:10:05', 0);
 
 -- ----------------------------
--- Table structure for goods
+-- Table structure for sa_stockbasicinfo
 -- ----------------------------
-DROP TABLE IF EXISTS `goods`;
-CREATE TABLE `goods`  (
-  `goods_id` int(11) NOT NULL AUTO_INCREMENT,
-  `goods_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `goods_price` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `goods_intro` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  PRIMARY KEY (`goods_id`) USING BTREE,
-  UNIQUE INDEX `goods_name`(`goods_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `sa_stockbasicinfo`;
+CREATE TABLE `sa_stockbasicinfo` (
+  `id` int(6) NOT NULL AUTO_INCREMENT,
+  `code` char(8) NOT NULL,
+  `name` char(6) NOT NULL,
+  `price` char(6) DEFAULT NULL,
+  `pe` char(6) DEFAULT NULL,
+  `pb` char(6) DEFAULT NULL,
+  `enable` int(2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Records of goods
+-- Records of sa_stockbasicinfo
 -- ----------------------------
-INSERT INTO `goods` VALUES (2, 'Apple 苹果 iPhone Xs Max ', '10038', '商品名称：Apple苹果Xs Max\r\n商品毛重：0.6kg\r\n多卡支持：双卡双待单4G\r\n机身厚度：薄（7mm-8.5mm）\r\n拍照特点：后置双摄像头，光学变焦，智能拍照\r\n网络制式：4G LTE全网通');
-INSERT INTO `goods` VALUES (3, '小米Mix3 ', '3299', '商品名称：小米MIX3\r\n商品毛重：0.88kg\r\n商品产地：中国大陆');
-INSERT INTO `goods` VALUES (4, 'Apple iPhone X ', '6999', '商品名称：AppleiPhone X \r\n商品毛重：435.00g \r\n商品产地：中国大陆');
-INSERT INTO `goods` VALUES (5, '戴尔DELL游匣G3烈焰版', '5899', '商品名称：戴尔G3\r\n商品毛重：3.63kg\r\n商品产地：中国大陆\r\n系统：Windows 10\r\n分辨率：全高清屏（1920×1080）\r\n显卡类别：高性能游戏独立显卡\r\n屏幕尺寸：15.6英寸\r\n内存容量：8G\r\n待机时长：9小时以上\r\n游戏性能：吃鸡性能，骨灰级\r\n显卡型号：GTX1050Ti\r\n处理器：Intel i5标准电压版\r\n特性：其他\r\n系列：戴尔-G系列\r\n裸机重量：大于2.5KG\r\n优选服务：两年质保\r\n显存容量：4G\r\n硬盘容量：128G+1T\r\n厚度：20.0mm以上');
-INSERT INTO `goods` VALUES (6, '联想ThinkPad 翼480', '5499', '商品名称：ThinkPad翼480\r\n商品毛重：2.68kg\r\n商品产地：中国大陆\r\n系统：Windows 10\r\n分辨率：全高清屏（1920×1080）\r\n显卡类别：入门级游戏独立显卡\r\n屏幕尺寸：14.0英寸\r\n内存容量：8G\r\n待机时长：5-7小时\r\n色系：其他色系\r\n显卡型号：其他');
-INSERT INTO `goods` VALUES (7, 'Apple MacBook Pro', '10499', '商品名称：AppleMPXU2CH/A\r\n商品毛重：2.64kg\r\n商品产地：中国大陆\r\n系统：MAC\r\n分辨率：其他\r\n显卡类别：集成显卡\r\n屏幕尺寸：13.3英寸\r\n内存容量：8G\r\n待机时长：9小时以上\r\n色系：其他色系\r\n显卡型号：其他');
-INSERT INTO `goods` VALUES (8, '港荣蒸蛋糕', '38.5', '商品名称：港荣港荣蒸奶香蛋糕整箱1kg 蒸蛋糕 饼干蛋糕软面包零食品\r\n商品毛重：1.28kg\r\n商品产地：中国广东揭阳\r\n国产/进口：国产\r\n加工工艺：蒸蛋糕\r\n包装单位：箱装\r\n是否含糖：含糖');
-INSERT INTO `goods` VALUES (9, '手撕面包', '29', '商品名称：良品铺子 手撕面包1050g整箱装 早餐食品蛋糕口袋小糕点点心孕妇儿童零食大礼包礼盒\r\n店铺： 良品铺子官方旗舰店\r\n商品毛重：1.05kg\r\n商品产地：中国大陆\r\n资质认证：其它\r\n国产/进口：国产');
-INSERT INTO `goods` VALUES (12, '烟台红富士苹果', '49.9', '商品名称：京东生鲜12个烟台红富士\r\n商品毛重：3.11kg\r\n商品产地：山东烟台');
+INSERT INTO `sa_stockbasicinfo` VALUES ('1', 'sh600893', '中国平安', '49.50', '123', '3.5', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('2', 'sz000001', '中国神华', '30.05', '89', '2.5', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('3', '000003', '贵州茅台', '35.00', '12.9', '25', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('4', '000004', '五粮液', '100.35', '26.8', '3.6', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('5', '000005', '宁德时代', '400.28', '26', '21', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('6', '000006', '招商银行', '35', '23', '12.12', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('7', '000007', '万华化学', '46', '17', '3', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('8', '000008', '工商银行', '4.78', '5.1', '3', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('9', '000009', '比亚迪', '256', '345.9', '5.8', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('10', '000010', '格力电器', '29.89', '23', '3.8', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('11', '000011', '隆基股份', '78', '45', '3.9', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('12', '300000', '阳光电源', '56', '100.98', '6.1', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('13', '300001', '金风科技', '15.01', '11', '3', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('14', 'sz000338', '潍柴动力', '11.87', '13.1', '1.8', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('15', '000335', '三一重工', '13.1', '11.1', '2.5', '1');
+INSERT INTO `sa_stockbasicinfo` VALUES ('16', '600000', '中国银行', '16.7', '5', '0.8', '1');
 
 -- ----------------------------
--- Table structure for inwarehouse
+-- Table structure for sa_stockdetail
 -- ----------------------------
-DROP TABLE IF EXISTS `inwarehouse`;
-CREATE TABLE `inwarehouse`  (
-  `inwarehouse_id` int(11) NOT NULL AUTO_INCREMENT,
-  `inwarehouse_count` int(11) NULL DEFAULT NULL,
-  `inwarehouse_price` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `inwarehouse_addtime` datetime(0) NULL DEFAULT NULL,
-  `inwarehouse_goods` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `inwarehouse_supplier` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `inwarehouse_user_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `inwarehouse_num` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  PRIMARY KEY (`inwarehouse_id`) USING BTREE,
-  INDEX `ix_inwarehouse_inwarehouse_addtime`(`inwarehouse_addtime`) USING BTREE,
-  INDEX `inwarehouse_ibfk_1`(`inwarehouse_num`) USING BTREE,
-  CONSTRAINT `inwarehouse_ibfk_1` FOREIGN KEY (`inwarehouse_num`) REFERENCES `purchase` (`purchase_num`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
+DROP TABLE IF EXISTS `sa_stockdetail`;
+CREATE TABLE `sa_stockdetail` (
+  `id` int(6) NOT NULL AUTO_INCREMENT,
+  `code` char(8) NOT NULL,
+  `name` char(6) NOT NULL,
+  `seq` char(6) DEFAULT NULL,
+  `title` char(255) DEFAULT NULL,
+  `content` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Records of inwarehouse
+-- Records of sa_stockdetail
 -- ----------------------------
-INSERT INTO `inwarehouse` VALUES (22, 10, '54990', NULL, '联想ThinkPad 翼480', '大雅计算机技术有限公司', '超级管理员', '2018110820503816');
-INSERT INTO `inwarehouse` VALUES (25, 2, '6598', NULL, '小米Mix3 ', '大雅计算机技术有限公司', '超级管理员', '2018110820455295');
-INSERT INTO `inwarehouse` VALUES (26, 15, '577.5', NULL, '港荣蒸蛋糕', '龙泉绿瓯食品有限公司', '李茂', '2018110821283258');
-INSERT INTO `inwarehouse` VALUES (27, 15, '577.5', NULL, '港荣蒸蛋糕', '龙泉绿瓯食品有限公司', '李茂', '2018110821283258');
-INSERT INTO `inwarehouse` VALUES (28, 10, '54990', NULL, '联想ThinkPad 翼480', '大雅计算机技术有限公司', '超级管理员', '2018110820503816');
-INSERT INTO `inwarehouse` VALUES (29, 2, '6598', NULL, '小米Mix3 ', '大雅计算机技术有限公司', '超级管理员', '2018110820455295');
-
--- ----------------------------
--- Table structure for power
--- ----------------------------
-DROP TABLE IF EXISTS `power`;
-CREATE TABLE `power`  (
-  `power_id` int(11) NOT NULL AUTO_INCREMENT,
-  `power_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `power_addtime` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`power_id`) USING BTREE,
-  UNIQUE INDEX `power_name`(`power_name`) USING BTREE,
-  INDEX `ix_power_power_addtime`(`power_addtime`) USING BTREE,
-  INDEX `ix_power_power_id`(`power_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of power
--- ----------------------------
-INSERT INTO `power` VALUES (1, 'root', '2018-11-08 19:00:56');
-INSERT INTO `power` VALUES (2, 'staff', '2018-11-08 19:00:56');
-
--- ----------------------------
--- Table structure for purchase
--- ----------------------------
-DROP TABLE IF EXISTS `purchase`;
-CREATE TABLE `purchase`  (
-  `purchase_id` int(11) NOT NULL AUTO_INCREMENT,
-  `purchase_num` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `purchase_count` int(11) NULL DEFAULT NULL,
-  `purchase_price` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `purchase_addtime` datetime(0) NULL DEFAULT NULL,
-  `purchase_goods` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `purchase_supplier` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `purchase_user_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  PRIMARY KEY (`purchase_id`) USING BTREE,
-  UNIQUE INDEX `purchase_num`(`purchase_num`) USING BTREE,
-  INDEX `purchase_goods`(`purchase_goods`) USING BTREE,
-  INDEX `purchase_supplier`(`purchase_supplier`) USING BTREE,
-  INDEX `purchase_user_name`(`purchase_user_name`) USING BTREE,
-  INDEX `ix_purchase_purchase_addtime`(`purchase_addtime`) USING BTREE,
-  CONSTRAINT `purchase_ibfk_1` FOREIGN KEY (`purchase_goods`) REFERENCES `goods` (`goods_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `purchase_ibfk_2` FOREIGN KEY (`purchase_supplier`) REFERENCES `supplier` (`supplier_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `purchase_ibfk_3` FOREIGN KEY (`purchase_user_name`) REFERENCES `user` (`user_name`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of purchase
--- ----------------------------
-INSERT INTO `purchase` VALUES (1, '2018110819270831', 10, '100380', '2018-11-01 19:27:09', 'Apple 苹果 iPhone Xs Max ', '深圳市兴鑫磊光电科技有限公司', '超级管理员');
-INSERT INTO `purchase` VALUES (4, '2018110819304186', 60, '4740', '2018-11-05 19:30:42', '小米Mix3 ', '龙泉绿瓯食品有限公司', '超级管理员');
-INSERT INTO `purchase` VALUES (13, '2018110820455295', 2, '6598', '2018-11-05 20:45:53', '小米Mix3 ', '大雅计算机技术有限公司', '超级管理员');
-INSERT INTO `purchase` VALUES (15, '2018110820503816', 10, '54990', '2018-11-05 20:50:39', '联想ThinkPad 翼480', '大雅计算机技术有限公司', '超级管理员');
-INSERT INTO `purchase` VALUES (20, '2018110821283258', 15, '577.5', '2018-11-08 21:28:32', '港荣蒸蛋糕', '龙泉绿瓯食品有限公司', '李茂');
-INSERT INTO `purchase` VALUES (21, '2018110821422694', 5, '249.5', '2018-11-08 21:42:26', '烟台红富士苹果', '四平市新华汽车销售维修服务有限公司', '超级管理员');
-
--- ----------------------------
--- Table structure for returngoods
--- ----------------------------
-DROP TABLE IF EXISTS `returngoods`;
-CREATE TABLE `returngoods`  (
-  `returngoods_id` int(11) NOT NULL AUTO_INCREMENT,
-  `returngoods_count` int(11) NULL DEFAULT NULL,
-  `returngoods_price` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `returngoods_addtime` datetime(0) NULL DEFAULT NULL,
-  `returngoods_goods` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `returngoods_supplier` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `returngoods_user_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `returngoods_num` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  PRIMARY KEY (`returngoods_id`) USING BTREE,
-  INDEX `returngoods_num`(`returngoods_num`) USING BTREE,
-  INDEX `ix_returngoods_returngoods_addtime`(`returngoods_addtime`) USING BTREE,
-  CONSTRAINT `returngoods_ibfk_1` FOREIGN KEY (`returngoods_num`) REFERENCES `purchase` (`purchase_num`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of returngoods
--- ----------------------------
-INSERT INTO `returngoods` VALUES (11, 10, '54990', NULL, '联想ThinkPad 翼480', '大雅计算机技术有限公司', '超级管理员', '2018110820503816');
-INSERT INTO `returngoods` VALUES (14, 2, '6598', NULL, '小米Mix3 ', '大雅计算机技术有限公司', '超级管理员', '2018110820455295');
-
--- ----------------------------
--- Table structure for salary
--- ----------------------------
-DROP TABLE IF EXISTS `salary`;
-CREATE TABLE `salary`  (
-  `salary_id` int(11) NOT NULL AUTO_INCREMENT,
-  `salary_base` int(11) NULL DEFAULT NULL,
-  `salary_grade` int(11) NULL DEFAULT NULL,
-  `salary_subsidy` int(11) NULL DEFAULT NULL,
-  `salary_other` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`salary_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for sales
--- ----------------------------
-DROP TABLE IF EXISTS `sales`;
-CREATE TABLE `sales`  (
-  `sales_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sales_num` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `sales_count` int(11) NULL DEFAULT NULL,
-  `sales_price` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `sales_addtime` datetime(0) NULL DEFAULT NULL,
-  `sales_user_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `sales_client_id` int(11) NULL DEFAULT NULL,
-  `sales_goods_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  PRIMARY KEY (`sales_id`) USING BTREE,
-  UNIQUE INDEX `sales_num`(`sales_num`) USING BTREE,
-  INDEX `sales_user_name`(`sales_user_name`) USING BTREE,
-  INDEX `sales_client_id`(`sales_client_id`) USING BTREE,
-  INDEX `sales_goods_name`(`sales_goods_name`) USING BTREE,
-  INDEX `ix_sales_sales_addtime`(`sales_addtime`) USING BTREE,
-  CONSTRAINT `sales_ibfk_1` FOREIGN KEY (`sales_user_name`) REFERENCES `user` (`user_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `sales_ibfk_2` FOREIGN KEY (`sales_client_id`) REFERENCES `client` (`client_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `sales_ibfk_3` FOREIGN KEY (`sales_goods_name`) REFERENCES `goods` (`goods_name`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of sales
--- ----------------------------
-INSERT INTO `sales` VALUES (3, '2018110820530679', 10, '104990', '2018-11-06 20:53:07', '超级管理员', 1, 'Apple MacBook Pro');
-INSERT INTO `sales` VALUES (4, '2018110821044480', 10, '54990', '2018-11-07 21:04:44', '李茂', 6, '联想ThinkPad 翼480');
-INSERT INTO `sales` VALUES (9, '2018110821330233', 10, '385', '2018-11-06 21:33:03', '超级管理员', 3, '港荣蒸蛋糕');
-
--- ----------------------------
--- Table structure for sealreturngoods
--- ----------------------------
-DROP TABLE IF EXISTS `sealreturngoods`;
-CREATE TABLE `sealreturngoods`  (
-  `sealreturngoods_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sealreturngoods_count` int(11) NULL DEFAULT NULL,
-  `sealreturngoods_price` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `sealreturngoods_addtime` datetime(0) NULL DEFAULT NULL,
-  `sealreturngoods_goods` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `sealreturngoods_supplier` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `sealreturngoods_user_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `sealreturngoods_num` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  PRIMARY KEY (`sealreturngoods_id`) USING BTREE,
-  INDEX `sealreturngoods_num`(`sealreturngoods_num`) USING BTREE,
-  INDEX `ix_sealreturngoods_sealreturngoods_addtime`(`sealreturngoods_addtime`) USING BTREE,
-  CONSTRAINT `sealreturngoods_ibfk_1` FOREIGN KEY (`sealreturngoods_num`) REFERENCES `sales` (`sales_num`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of sealreturngoods
--- ----------------------------
-INSERT INTO `sealreturngoods` VALUES (2, 10, '54990', NULL, '联想ThinkPad 翼480', '6', '李茂', '2018110821044480');
-INSERT INTO `sealreturngoods` VALUES (4, 10, '385', NULL, '港荣蒸蛋糕', '3', '超级管理员', '2018110821330233');
-
--- ----------------------------
--- Table structure for section
--- ----------------------------
-DROP TABLE IF EXISTS `section`;
-CREATE TABLE `section`  (
-  `section_id` int(11) NOT NULL AUTO_INCREMENT,
-  `section_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `section_addtime` datetime(0) NULL DEFAULT NULL,
-  `section_is_true` tinyint(1) NULL DEFAULT NULL,
-  PRIMARY KEY (`section_id`) USING BTREE,
-  UNIQUE INDEX `section_name`(`section_name`) USING BTREE,
-  INDEX `ix_section_section_addtime`(`section_addtime`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of section
--- ----------------------------
-INSERT INTO `section` VALUES (1, '管理部门', '2018-11-08 19:00:56', 0);
-INSERT INTO `section` VALUES (2, '临时部', '2018-11-08 19:00:56', 0);
-INSERT INTO `section` VALUES (3, '销售部', '2018-11-09 13:09:46', 0);
-INSERT INTO `section` VALUES (4, '采购部', '2018-11-09 13:14:20', 0);
-
--- ----------------------------
--- Table structure for stock
--- ----------------------------
-DROP TABLE IF EXISTS `stock`;
-CREATE TABLE `stock`  (
-  `stock_id` int(11) NOT NULL AUTO_INCREMENT,
-  `stock_count` int(11) NULL DEFAULT NULL,
-  `stock_price` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `stock_addtime` datetime(0) NULL DEFAULT NULL,
-  `stock_goods` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `stock_supplier` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `stock_user_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `stock_num` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  PRIMARY KEY (`stock_id`) USING BTREE,
-  INDEX `stock_num`(`stock_num`) USING BTREE,
-  INDEX `ix_stock_stock_addtime`(`stock_addtime`) USING BTREE,
-  CONSTRAINT `stock_ibfk_1` FOREIGN KEY (`stock_num`) REFERENCES `sales` (`sales_num`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of stock
--- ----------------------------
-INSERT INTO `stock` VALUES (2, 10, '54990', NULL, '联想ThinkPad 翼480', '6', '李茂', '2018110821044480');
-INSERT INTO `stock` VALUES (4, 10, '385', NULL, '港荣蒸蛋糕', '3', '超级管理员', '2018110821330233');
-
--- ----------------------------
--- Table structure for supplier
--- ----------------------------
-DROP TABLE IF EXISTS `supplier`;
-CREATE TABLE `supplier`  (
-  `supplier_id` int(11) NOT NULL AUTO_INCREMENT,
-  `supplier_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `supplier_addre` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `supplier_credit` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`supplier_id`) USING BTREE,
-  UNIQUE INDEX `supplier_name`(`supplier_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of supplier
--- ----------------------------
-INSERT INTO `supplier` VALUES (1, '四平市新华汽车销售维修服务有限公司', '四平市铁东区国道102南出口与国道303交汇处东行500米', 1);
-INSERT INTO `supplier` VALUES (2, '龙泉绿瓯食品有限公司', '河南', 2);
-INSERT INTO `supplier` VALUES (3, '庆元县兰天绿谷实业有限公司', '浙江庆元', 4);
-INSERT INTO `supplier` VALUES (4, '缙云县夏氏饮料有限公司', '浙江丽水缙云', 3);
-INSERT INTO `supplier` VALUES (5, '深圳市兴鑫磊光电科技有限公司', '    深圳市南山区西丽旺棠工业区16栋5、6楼 ', 5);
-INSERT INTO `supplier` VALUES (6, '湖北博聚信息技术有限公司', '    湖北省襄阳市追日路2号襄阳软件园 ', 5);
-INSERT INTO `supplier` VALUES (7, '大雅计算机技术有限公司', '    浙江省绍兴解放大道735号 ', 3);
-INSERT INTO `supplier` VALUES (8, '上海易果电子商务有限公司', '上海市长宁区金钟路999号c幢5楼', 4);
-INSERT INTO `supplier` VALUES (9, '上海水果电子商务有限公司', '上海市长宁区金钟路', 5);
-
--- ----------------------------
--- Table structure for user
--- ----------------------------
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user`  (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_count` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_sex` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_pwd` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_mail` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_phone` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_addtime` datetime(0) NULL DEFAULT NULL,
-  `user_photo` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_ispass` tinyint(1) NULL DEFAULT NULL,
-  `user_section` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_duty` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_power` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `user_salary` int(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`user_id`) USING BTREE,
-  UNIQUE INDEX `user_count`(`user_count`) USING BTREE,
-  UNIQUE INDEX `user_name`(`user_name`) USING BTREE,
-  INDEX `user_section`(`user_section`) USING BTREE,
-  INDEX `user_duty`(`user_duty`) USING BTREE,
-  INDEX `user_power`(`user_power`) USING BTREE,
-  INDEX `user_salary`(`user_salary`) USING BTREE,
-  INDEX `ix_user_user_addtime`(`user_addtime`) USING BTREE,
-  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`user_section`) REFERENCES `section` (`section_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `user_ibfk_2` FOREIGN KEY (`user_duty`) REFERENCES `duty` (`duty_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `user_ibfk_3` FOREIGN KEY (`user_power`) REFERENCES `power` (`power_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `user_ibfk_4` FOREIGN KEY (`user_salary`) REFERENCES `salary` (`salary_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of user
--- ----------------------------
-INSERT INTO `user` VALUES (1, 'root', '超级管理员', '男', 'pbkdf2:sha256:50000$WuO0dDYG$bc6abb402d99663d82737a36898bc862d672465cece851764078845cb0445f25', '374935530@qq.com', '13000000000', '2018-11-08 19:00:56', NULL, 1, '管理部门', '管理员', 'root', NULL);
-INSERT INTO `user` VALUES (3, 'limao', '李茂', '男', 'pbkdf2:sha256:50000$vi4b5LR1$b8e5578dcd412bf25e06c924ae11c6f92e5f077fff709660796c93e15a3f679d', 'limao@wesm.com', '18965441256', '2018-11-08 19:30:16', NULL, 0, '临时部', '普通员工', 'staff', NULL);
-
--- ----------------------------
--- Table structure for warehouse
--- ----------------------------
-DROP TABLE IF EXISTS `warehouse`;
-CREATE TABLE `warehouse`  (
-  `warehouse_id` int(11) NOT NULL AUTO_INCREMENT,
-  `warehouse_goods_num` int(11) NULL DEFAULT NULL,
-  `warehouse_goods_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  `warehouse_supplier_name` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
-  PRIMARY KEY (`warehouse_id`) USING BTREE,
-  INDEX `warehouse_goods_name`(`warehouse_goods_name`) USING BTREE,
-  INDEX `warehouse_supplier_name`(`warehouse_supplier_name`) USING BTREE,
-  CONSTRAINT `warehouse_ibfk_1` FOREIGN KEY (`warehouse_goods_name`) REFERENCES `goods` (`goods_name`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `warehouse_ibfk_2` FOREIGN KEY (`warehouse_supplier_name`) REFERENCES `supplier` (`supplier_name`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4   ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of warehouse
--- ----------------------------
-INSERT INTO `warehouse` VALUES (2, 6, 'Apple MacBook Pro', '大雅计算机技术有限公司');
-INSERT INTO `warehouse` VALUES (3, 10, '联想ThinkPad 翼480', '大雅计算机技术有限公司');
-INSERT INTO `warehouse` VALUES (4, 10, 'Apple 苹果 iPhone Xs Max ', '深圳市兴鑫磊光电科技有限公司');
-INSERT INTO `warehouse` VALUES (8, 10, '小米Mix3 ', '深圳市兴鑫磊光电科技有限公司');
-INSERT INTO `warehouse` VALUES (10, 10, 'Apple MacBook Pro', '大雅计算机技术有限公司');
-INSERT INTO `warehouse` VALUES (18, 10, 'Apple MacBook Pro', '大雅计算机技术有限公司');
-INSERT INTO `warehouse` VALUES (19, 90, '港荣蒸蛋糕', '缙云县夏氏饮料有限公司');
-INSERT INTO `warehouse` VALUES (20, 2, '小米Mix3 ', '大雅计算机技术有限公司');
-INSERT INTO `warehouse` VALUES (21, 10, '手撕面包', '龙泉绿瓯食品有限公司');
-INSERT INTO `warehouse` VALUES (22, 10, '联想ThinkPad 翼480', '大雅计算机技术有限公司');
-INSERT INTO `warehouse` VALUES (23, 15, '手撕面包', '龙泉绿瓯食品有限公司');
-INSERT INTO `warehouse` VALUES (24, 10, '港荣蒸蛋糕', '龙泉绿瓯食品有限公司');
-INSERT INTO `warehouse` VALUES (25, 2, '小米Mix3 ', '大雅计算机技术有限公司');
-INSERT INTO `warehouse` VALUES (26, 15, '港荣蒸蛋糕', '龙泉绿瓯食品有限公司');
-INSERT INTO `warehouse` VALUES (27, 15, '港荣蒸蛋糕', '龙泉绿瓯食品有限公司');
-INSERT INTO `warehouse` VALUES (28, 10, '联想ThinkPad 翼480', '大雅计算机技术有限公司');
-INSERT INTO `warehouse` VALUES (29, 2, '小米Mix3 ', '大雅计算机技术有限公司');
-
-SET FOREIGN_KEY_CHECKS = 1;
+INSERT INTO `sa_stockdetail` VALUES ('1', 'sz000001', '000001', '1', '大大萨达', '<p><b>1111111111111111111111111</b></p><p><br></p>');
+INSERT INTO `sa_stockdetail` VALUES ('2', 'sz000001', '000001', '2', '测试标题', '<p><b>22222222222222222222</b></p><p><br></p>');
+INSERT INTO `sa_stockdetail` VALUES ('3', 'sz000001', '中国神华', '3', '测试标题', '33333333333');
+INSERT INTO `sa_stockdetail` VALUES ('4', 'sz000001', '中国神华', '4', '测试标题', '44444444444444');
+INSERT INTO `sa_stockdetail` VALUES ('5', 'sh600893', '中国平安', '1', '测试标题', '1111111111111111111111');
+INSERT INTO `sa_stockdetail` VALUES ('6', 'sh600893', '中国平安', '2', '测试标题', '2222222222222222');
+INSERT INTO `sa_stockdetail` VALUES ('7', 'sh600893', '中国平安', '3', '测试标题', '内容11111111111111');
+INSERT INTO `sa_stockdetail` VALUES ('8', '000004', '五粮液', '1', '哈哈哈哈', '<p>我爱五浪液我爱五浪液我爱五浪液我爱五浪液我爱五浪液我爱五浪液我爱五浪液我爱五浪液我爱五浪液我爱五浪液我爱五浪液我爱五浪液</p>');
+INSERT INTO `sa_stockdetail` VALUES ('9', '000003', '贵州茅台', '1', '212121212', '<p>21212121</p><p><img src=\"data:image/png;base64,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\" alt=\"\"></p>');
+INSERT INTO `sa_stockdetail` VALUES ('10', '000005', '宁德时代', '1', '飒飒', '21212大大撒啊');
+INSERT INTO `sa_stockdetail` VALUES ('11', 'sz000001', '中国神华', '5', '555555555', '555555555');

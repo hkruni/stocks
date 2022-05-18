@@ -31,8 +31,22 @@ def stockBasicInfo():
 @admin_login_req
 def stockInfos():
 
-    sql ="select a.code,a.name,a.price,a.pe,a.pb,b.chanliang,b.channeng from sa_stockbasicinfo a left join sa_maitan_extend b on  a.code=b.code where enable = 1";
+    page = int(request.args.get('page'))
+    limit = int(request.args.get('limit'))
+
+    start = str((page - 1) * limit)
+    limit = str(limit)
+
+    count = 0;
+
+    countsql = "select count(*) as count from sa_stockbasicinfo a left join sa_maitan_extend b on  a.code=b.code where enable = 1";
+    ret0 = db.session.execute(countsql);
+    for l in ret0:
+        count = l[0]
+
+    sql ="select a.code,a.name,a.price,a.pe,a.pb,b.chanliang,b.channeng from sa_stockbasicinfo a left join sa_maitan_extend b on  a.code=b.code where enable = 1 limit " + start + "," + limit ;
     ret = db.session.execute(sql);
+    print(ret)
     datalist = [];
     for ll in list(ret):
         datalist.append({
@@ -47,7 +61,7 @@ def stockInfos():
     # page_data = StockBasicInfo.query.filter_by(enable = 1)
     # for item in page_data :
 
-    data = json.dumps({"data":datalist,"count":5,"code":0,"msg":""})
+    data = json.dumps({"data":datalist,"count":count,"code":0,"msg":""})
 
     return data
 
@@ -103,24 +117,26 @@ def updateStock():
 @stocks.route("/stockDetail/<code>/<name>",methods=["GET"])
 @admin_login_req
 def stockDetail(code,name):
-    stock = StockDetail.query.filter_by(code = code).first();
-    print(stock.content)
-    return render_template("stock/stockDetail.html",stock=stock)
+    stocks = StockDetail.query.filter_by(code = code).all();
+    nextseq = len(stocks) + 1
+    return render_template("stock/stockDetail.html",stocks=stocks,code=code,name=name,nextseq=nextseq)
 
 
-@stocks.route("/stockContentEdit/<code>/<name>",methods=["GET"])
+@stocks.route("/stockContentEdit/<code>/<name>/<seq>",methods=["GET"])
 @admin_login_req
-def stockDetailContentEdit(code,name):
-    return render_template("stock/stockContentEdit.html", code=code,name=name)
+def stockDetailContentEdit(code,name,seq):
+    return render_template("stock/stockContentEdit.html", code=code,name=name,seq=seq)
 
 
 #返回 股票文章ajax接口
-@stocks.route("/stockContent/<code>",methods=["GET"])
+@stocks.route("/stockContent/<code>/<seq>",methods=["GET"])
 @admin_login_req
-def stockContent(code):
-    detail = StockDetail.query.filter_by(code = code).first();
-    print(detail.content)
-    return json.dumps({"status": "ok","content":detail.content});
+def stockContent(code,seq):
+    detail = StockDetail.query.filter_by(code = code,seq=seq).first();
+    if(detail is None):
+        return json.dumps({"status": "none"});
+    else:
+        return json.dumps({"status": "ok","content":detail.content,"title":detail.title});
 
 
 @stocks.route("/stockform/",methods=["GET"])
@@ -152,14 +168,19 @@ def addStockContent():
     code = request.form.get('code');
     name = request.form.get('name');
     content = request.form.get('content');
-    stock = StockDetail.query.filter_by(code=code).first()
+    title = request.form.get('title');
+    seq = request.form.get('seq');
+    stock = StockDetail.query.filter_by(code=code,seq=seq).first()
     if stock is None :
         stock = StockDetail(
             name=name,
             code=code,
-            content=content
+            content=content,
+            title=title,
+            seq=seq,
         )
     stock.content = content
+    stock.title = title
     db.session.add(stock)
     db.session.commit()
     return json.dumps({"status":"ok"})

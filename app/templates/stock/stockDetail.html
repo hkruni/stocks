@@ -3,27 +3,49 @@
  {% import "admin/fy.html" as pg %}
 {% block content %}
 <br/>
-<div id="code" d="{{stock.code}}" style="display:none"></div>
-<div id="name" d="{{stock.name}}" style="display:none"></div>
-<div id="content"  d="{{stock.content}}" style="display:none"></div>
-<button class="layui-btn layui-btn-sm edit">编辑修改</button>
+<div id="code" d="{{code}}" style="display:none"></div>
+<div id="name" d="{{name}}" style="display:none"></div>
+<div id="nextseq" d="{{nextseq}}" style="display:none"></div>
+
+<div style="margin-bottom:20px;">
+<button class="layui-btn layui-btn-sm add" d="0">添加文章</button>
+</div>
+
+
+<div id = 'con'>
+{% for stock in stocks %}
+<button class="layui-btn layui-btn-sm edit" d="{{stock.seq}}">编辑修改</button>
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-  <div id="contents"></div>
+    <h2  style="margin-top:5px; margin-bottom:20px;">{{stock.title}}</h2>
+    <div id="content" hidden="hidden">{{stock.content}}</div>
+    <div id="contents"></div>
 </fieldset>
+{% endfor %}
+</div>
+
 
 
 <script>
     $ = layui.jquery;
-    // var  content = document.getElementById('content').getAttribute('d');
-    var  content = $('#content').attr('d');
 
-    $('#contents').html(content)
+    $('#con > fieldset > #content').each(function(){
+        $(this).next().html($(this).text())
+    });
 
+    //编辑修改的按钮
     $('.edit').on('click', function(){
         var  code = $('#code').attr('d');
         var  name = $('#name').attr('d');
-        window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name;
-        // window.location.href ="http://localhost:5050/static/stocks/stockContentEdit/" + code + "/" + name;
+        var seq = $(this).attr('d');
+        window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name +"/" + seq;
+     });
+
+    //添加文章的按钮
+    $('.add').on('click', function(){
+        var  code = $('#code').attr('d');
+        var  name = $('#name').attr('d');
+        var nextseq = $('#nextseq').attr('d');
+        window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name +"/" + nextseq;
      });
 </script>
 {% endblock %}
