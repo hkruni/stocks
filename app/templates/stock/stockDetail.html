@@ -2,35 +2,85 @@
 {% extends "admin/bases.html" %}
  {% import "admin/fy.html" as pg %}
 {% block content %}
+    <style>
+
+
+  input {
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid #c1c1c1;
+    padding: 0 5px;
+    width: 300px;
+  }
+
+  a {
+    display:inline-block;
+    margin:0px 0px 5px 5px;
+    padding:6px 8px;
+    font-size:14px;
+    outline:none;
+    text-align:center;
+    width:180px;
+    line-height:30px;
+    cursor: pointer;
+    }
+
+.article__bd__title {
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 20px auto 30px;
+    height: auto;
+    font-size: 28px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+</style>
+
 <br/>
 <div id="code" d="{{code}}" style="display:none"></div>
 <div id="name" d="{{name}}" style="display:none"></div>
 <div id="nextseq" d="{{nextseq}}" style="display:none"></div>
-
-<div style="margin-bottom:20px;">
-<button class="layui-btn layui-btn-sm add" d="0">添加文章</button>
-</div>
+<div id="related" d="{{relatedStocks}}" style="display:none"></div>
 
 
-<div id = 'con'>
-{% for stock in stocks %}
-<button class="layui-btn layui-btn-sm edit" d="{{stock.seq}}">编辑修改</button>
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-    <h2  style="margin-top:5px; margin-bottom:20px;">{{stock.title}}</h2>
-    <div id="content" hidden="hidden">{{stock.content}}</div>
-    <div id="contents"></div>
-</fieldset>
-{% endfor %}
-</div>
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">单行输入框</label>
+    <div class="layui-input-inline">
+      <input type="text" id="stock" placeholder="请输入标题" class="layui-input">
+    </div>
+
+  <div style="margin-bottom:20px;">
+    <button id="addstock" class="layui-btn layui-btn-sm ">添加文章</button>
+  </div>
+
+    <p id="content"></p>
+
+    <div id = 'con'>
+        {% for stock in stocks %}
+        <button class="layui-btn layui-btn-sm edit" style="margin-top:35px;" d="{{stock.seq}}">编辑修改</button>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <h2  style="margin-top:5px; margin-bottom:20px;" class="article__bd__title">{{stock.title}}</h2>
+            <div id="content" hidden="hidden">{{stock.content}}</div>
+            <div id="contents"></div>
+        </fieldset>
+        {% endfor %}
+    </div>
+
+  </div>
 
 
 
 <script>
-    $ = layui.jquery;
 
-    $('#con > fieldset > #content').each(function(){
+
+        layui.use(['jquery'], function () {
+            var $ = layui.jquery;
+
+      $('#con > fieldset > #content').each(function(){
         $(this).next().html($(this).text())
-    });
+     });
 
     //编辑修改的按钮
     $('.edit').on('click', function(){
@@ -47,5 +97,71 @@
         var nextseq = $('#nextseq').attr('d');
         window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name +"/" + nextseq;
      });
+
+    $('#addstock').click (function ()
+    {
+        var code = $('#code').attr('d');
+        var name = $("#stock").val()
+        $.ajax({
+            url:"/stocks/addRelatedStock",
+            data:{'code':code,'name':name},
+            method:'post',
+            "Content-Type": "application/json;charset=utf8",
+            dataType:"json",
+            success:function(data){
+                if (data.status == 'ok') {
+                    layer.msg('更新成功');
+                    var url = "http://localhost:5050/stocks/stockDetail/" + code + "/" + name;
+                    var aa = '<a class="item" href=' + '"' + url + '"' + '>' + $("#stock").val() + '</a>';
+                    $('#content').append(aa);
+                }else{
+                    layer.msg('未找到相关股票');
+                }
+            },
+            error:function(data){
+                layer.alert(JSON.stringify(data), {
+                    title: data
+                });
+             }
+        });
+
+    });
+
+
+            var  code = $('#code').attr('d');
+            $.ajax({
+                url:"/stocks/getRelatedStocks",
+                data:{'code':code},
+                method:'post',
+                "Content-Type": "application/json;charset=utf8",
+                dataType:"json",
+                success:function(data){
+                    if (data.status == 'ok') {
+                        list = data.data;
+                        for(var i = 0;i<list.length;i++ ){
+                            var name = list[i].name;
+                            var code = list[i].code
+                            var value= name+'-'+code;
+                            var url = "http://localhost:5050/stocks/stockDetail/" + code + "/" + name;
+                            var aa = '<a class="item" href=' + '"' + url + '"' + '>' + value + '</a>';
+                            $('#content').append(aa);
+                        }
+
+                    }
+                },
+                error:function(data){
+                    layer.alert(JSON.stringify(data), {
+                        title: data
+                    });
+                 }
+            });
+
+
+    });
+
+
+
+
+
 </script>
 {% endblock %}

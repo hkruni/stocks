@@ -118,8 +118,9 @@ def updateStock():
 @admin_login_req
 def stockDetail(code,name):
     stocks = StockDetail.query.filter_by(code = code).all();
+    s = StockBasicInfo.query.filter_by(code = code).first();
     nextseq = len(stocks) + 1
-    return render_template("stock/stockDetail.html",stocks=stocks,code=code,name=name,nextseq=nextseq)
+    return render_template("stock/stockDetail.html",stocks=stocks,code=code,name=name,nextseq=nextseq,relatedStocks=s.relatedStock)
 
 
 @stocks.route("/stockContentEdit/<code>/<name>/<seq>",methods=["GET"])
@@ -187,3 +188,67 @@ def addStockContent():
 
 
 
+@stocks.route("/stockAutoCompletes/",methods=["GET","POST"])
+@admin_login_req
+def stockAutoCompletes():
+
+    keyword = request.form.get('search')
+    print(keyword)
+
+    sql = "select a.name,a.code from sa_stockbasicinfo a  where name like '%" + keyword + "%'";
+    print(sql)
+    ret = db.session.execute(sql);
+
+    datalist = [];
+    for ll in list(ret):
+        datalist.append({
+            'name':ll[1] ,
+            'code':ll[0]
+        })
+
+    print(datalist)
+    data = json.dumps({"data":datalist,"code":200})
+
+    return data
+
+@stocks.route("/addRelatedStock/",methods=["GET","POST"],strict_slashes=False)
+@admin_login_req
+def addRelatedStock():
+
+    name = request.form.get('name')
+    code = request.form.get('code')
+    relatedStock = StockBasicInfo.query.filter_by(name=name).first()
+    if relatedStock is None :
+        return json.dumps({"status":"error"});
+    else:
+        rstock = name + '-' + code;
+        stock = StockBasicInfo.query.filter_by(code=code).first()
+        if stock.relatedStock is None:
+            stock.relatedStock = rstock
+        else:
+            stock.relatedStock = stock.relatedStock + "," + rstock
+        db.session.add(stock)
+        db.session.commit()
+        return json.dumps({"status": "ok"});
+
+
+@stocks.route("/getRelatedStocks/",methods=["GET","POST"],strict_slashes=False)
+@admin_login_req
+def getRelatedStocks():
+
+    code = request.form.get('code')
+    stock = StockBasicInfo.query.filter_by(code=code).first()
+
+    datalist = [];
+    if stock.relatedStock is not None:
+        stocks = stock.relatedStock
+        ss = stocks.split(",")
+        for ll in ss :
+            info = ll.split("-")
+            datalist.append({
+                'name':info[0],
+                'code':info[1]
+
+            })
+
+    return json.dumps({"status": "ok","data":datalist});

@@ -9,6 +9,7 @@ class StockBasicInfo(db.Model):
     pe = db.Column(db.String(6))
     pb = db.Column(db.String(6))
     enable = db.Column(db.INTEGER)
+    relatedStock = db.Column(db.String)
 
 
 class StockDetail(db.Model):
@@ -19,6 +20,7 @@ class StockDetail(db.Model):
     content = db.Column(db.String)
     title = db.Column(db.String)
     seq = db.Column(db.String)
+
 
 class MeiTanExtend(db.Model):
     __tablename__ = 'sa_maitan_extend'
