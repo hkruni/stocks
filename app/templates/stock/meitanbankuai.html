@@ -1,6 +1,7 @@
 {% extends "admin/bases.html" %}
 
 {% block content %}
+<div id="bankuai" d="{{bankuai}}" style="display:none"></div>
 
 <form class="layui-form" lay-filter="form1" id="form1" style="display: none" >
   <div class="layui-form-item">
@@ -15,12 +16,14 @@
       <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
     </div>
   </div>
+  <input type="text" name="bankuai" lautocomplete="off" style="display:none" value="{{bankuai}}">
 </form>
 
 
 <div id="toolbarDemo" style="display:none">
   <div class="layui-btn-container">
     <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+      <button class="layui-btn layui-btn-sm" lay-event="update">更新</button>
   </div>
 </div>
 
@@ -34,6 +37,8 @@
 
 <script type="text/html" id="operation">
     <a class="layui-btn layui-btn-xs" lay-event="dongfang" >东方财富</a>
+    <a class="layui-btn layui-btn-xs" lay-event="nianbao" >年报</a>
+    <a class="layui-btn layui-btn-xs" lay-event="touzi" >投资数据网</a>
     <a class="layui-btn layui-btn-xs" lay-event="detail" >详情</a>
     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="update">更新</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -42,11 +47,13 @@
 <script>
   layui.use('table', function(){
 
+      var url = '/stocks/stockInfos/' + document.getElementById('bankuai').getAttribute('d');
+
       var table = layui.table
       table.render({
           elem: '#test'
           ,toolbar: '#toolbarDemo'
-          ,url: '/stocks/stockInfos'
+          ,url: url
           ,page : {
              layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
            },
@@ -59,48 +66,76 @@
           ,{field: 'pb', title: '市净率', width: 80, sort: true,edit: 'text'}
           ,{field: 'chanliang', title: '产量（万吨）', width: 120, sort: true,edit: 'text'}
           ,{field: 'channeng', title: '产能（万吨）', width: 120, sort: true,edit: 'text'}
-          ,{fixed: 'right', title: '操作', toolbar: '#operation', width:300}
+          ,{fixed: 'right', title: '操作', toolbar: '#operation', width:400}
         ]],
       });
 
         //头工具栏事件
       table.on('toolbar(stocktable)', function(obj){
-            layer.open({
-                type: 1,
-                // content:'http://localhost:5050/stocks/stockform/',
-                content:$('#form1'),
-                skin: 'layui-layer-rim', //加上边框
-                area: ['370px', '360px'], //宽高
-                btn: ['添加','取消'],
-                yes: function (layero,index) {
-                    formData = layui.form.val("form1");
+
+            switch(obj.event){
+                case 'add':
+                    layer.open({
+                    type: 1,
+                    // content:'http://localhost:5050/stocks/stockform/',
+                    content:$('#form1'),
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['370px', '360px'], //宽高
+                    btn: ['添加','取消'],
+                    yes: function (layero,index) {
+                        formData = layui.form.val("form1");
+                        $.ajax({
+                            url:"/stocks/addStock",
+                            data:formData,
+                            method:'post',
+                            "Content-Type": "application/json;charset=utf8",
+                            dataType:"json",
+                            success:function(data){
+                                if (data.status == 'ok') {
+                                    layer.msg('添加成功');
+                                }
+                                layer.closeAll();
+                                table.reload('test', {});
+                            },
+                            error:function(data){
+                                layer.alert(JSON.stringify(data), {
+                                    title: data
+                                });
+                             }
+                         });
+
+                    }
+
+                    });
+                    break;
+                case 'update':
+                    var bankuai = document.getElementById('bankuai').getAttribute('d');
                     $.ajax({
-                        url:"/stocks/addStock",
-                        data:formData,
+                        url:"/stocks/updateCaiwu",
+                        data:{'bankuai':bankuai},
                         method:'post',
                         "Content-Type": "application/json;charset=utf8",
                         dataType:"json",
                         success:function(data){
                             if (data.status == 'ok') {
-                                layer.msg('添加成功');
+                                layer.msg('更新成功');
+                                table.reload('test', {});
                             }
-                            layer.closeAll();
-                            table.reload('test', {});
                         },
                         error:function(data){
                             layer.alert(JSON.stringify(data), {
                                 title: data
                             });
                          }
-                     });
+                    });
+                    break;
+            }
 
-                }
-
-                })
       });
 
       table.on('tool(stocktable)', function(obj){
         var data = obj.data;
+        var orgCode = document.getElementById('code').getAttribute('d');
         if(obj.event === 'del'){
           layer.confirm('真的删除行么', function(index){
               $.ajax({
@@ -146,8 +181,13 @@
         }else if(obj.event === 'detail'){
             window.location.href ="http://localhost:5050/stocks/stockDetail/" + data.code + "/" + data.name;
         }else if(obj.event === 'dongfang'){
-            window.open("https://emweb.securities.eastmoney.com/PC_HSF10/BusinessAnalysis/Index?type=web&code=sh600893", "_blank");
-            // parent.location.href ="https://emweb.securities.eastmoney.com/PC_HSF10/BusinessAnalysis/Index?type=web&code=sh600893"
+            window.open("https://emweb.securities.eastmoney.com/PC_HSF10/BusinessAnalysis/Index?type=web&code="+data.code, "_blank");
+        }else if(obj.event === 'touzi'){
+            window.open("https://www.touzid.com/company/fundamental.html#/"+data.code, "_blank");
+        }
+        else if(obj.event === 'nianbao'){
+            url = "https://money.finance.sina.com.cn/corp/go.php/vCB_Bulletin/stockid/" +data.code.substring(2)+"/page_type/ndbg.phtml"
+            window.open(url, "_blank");
         }
      });
 

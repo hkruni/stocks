@@ -13,17 +13,17 @@
     width: 300px;
   }
 
-  a {
-    display:inline-block;
-    margin:0px 0px 5px 5px;
-    padding:6px 8px;
-    font-size:14px;
-    outline:none;
-    text-align:center;
-    width:180px;
-    line-height:30px;
-    cursor: pointer;
-    }
+  {#a {#}
+  {#  display:inline-block;#}
+  {#  margin:0px 0px 5px 5px;#}
+  {#  padding:6px 8px;#}
+  {#  font-size:14px;#}
+  {#  outline:none;#}
+  {#  text-align:center;#}
+  {#  width:180px;#}
+  {#  line-height:30px;#}
+  {#  cursor: pointer;#}
+  {#  }#}
 
 .article__bd__title {
     font-weight: 700;
@@ -46,17 +46,18 @@
 
 
   <div class="layui-form-item">
-    <label class="layui-form-label">单行输入框</label>
+    <label class="layui-form-label">关联股票</label>
     <div class="layui-input-inline">
-      <input type="text" id="stock" placeholder="请输入标题" class="layui-input">
+      <input type="text" id="stock" placeholder="请输入关联的股票名称" class="layui-input">
     </div>
 
   <div style="margin-bottom:20px;">
-    <button id="addstock" class="layui-btn layui-btn-sm ">添加文章</button>
+    <button id="addstock" class="layui-btn layui-btn-sm ">添加</button>
   </div>
 
-    <p id="content"></p>
+  <table  id="test" lay-filter="stocktable"></table>
 
+  <button class="layui-btn layui-btn-sm add" style="margin-top:35px;">添加文章</button>
     <div id = 'con'>
         {% for stock in stocks %}
         <button class="layui-btn layui-btn-sm edit" style="margin-top:35px;" d="{{stock.seq}}">编辑修改</button>
@@ -71,81 +72,57 @@
   </div>
 
 
+<script type="text/html" id="operation">
+    <a class="layui-btn layui-btn-xs" lay-event="dongfang" >东方财富</a>
+    <a class="layui-btn layui-btn-xs" lay-event="nianbao" >年报</a>
+    <a class="layui-btn layui-btn-xs" lay-event="touzi" >投资数据网</a>
+    <a class="layui-btn layui-btn-xs" lay-event="detail" >详情</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 
 <script>
 
 
-        layui.use(['jquery'], function () {
-            var $ = layui.jquery;
+    layui.use(['jquery','table'], function () {
+        var $ = layui.jquery;
+        var table = layui.table
 
-      $('#con > fieldset > #content').each(function(){
-        $(this).next().html($(this).text())
-     });
+        var url = '/stocks/getRelatedStocks/' + document.getElementById('code').getAttribute('d');
 
-    //编辑修改的按钮
-    $('.edit').on('click', function(){
-        var  code = $('#code').attr('d');
-        var  name = $('#name').attr('d');
-        var seq = $(this).attr('d');
-        window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name +"/" + seq;
-     });
+        table.render({
+          elem: '#test'
+          ,toolbar: '#toolbarDemo'
+          ,url: url
+          ,page : {
+             layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+           },
+        cols: [[ //表头
+           {field: 'id', title: '序号', width:80, sort: true, fixed: 'left', type:'numbers'}
+          ,{field: 'code', title: '股票代码', width:100}
+          ,{field: 'name', title: '股票名称', width:90}
+          ,{field: 'price', title: '价格', width:80,edit: 'text'}
+          ,{field: 'pe', title: '市盈率', width: 80, sort: true,edit: 'text'}
+          ,{field: 'pb', title: '市净率', width: 80, sort: true,edit: 'text'}
+          ,{fixed: 'right', title: '操作', toolbar: '#operation', width:400}
+        ]],
+      });
 
-    //添加文章的按钮
-    $('.add').on('click', function(){
-        var  code = $('#code').attr('d');
-        var  name = $('#name').attr('d');
-        var nextseq = $('#nextseq').attr('d');
-        window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name +"/" + nextseq;
-     });
+      table.on('tool(stocktable)', function(obj){
+        var data = obj.data;
+        var orgCode = document.getElementById('code').getAttribute('d');
 
-    $('#addstock').click (function ()
-    {
-        var code = $('#code').attr('d');
-        var name = $("#stock").val()
-        $.ajax({
-            url:"/stocks/addRelatedStock",
-            data:{'code':code,'name':name},
-            method:'post',
-            "Content-Type": "application/json;charset=utf8",
-            dataType:"json",
-            success:function(data){
-                if (data.status == 'ok') {
-                    layer.msg('更新成功');
-                    var url = "http://localhost:5050/stocks/stockDetail/" + code + "/" + name;
-                    var aa = '<a class="item" href=' + '"' + url + '"' + '>' + $("#stock").val() + '</a>';
-                    $('#content').append(aa);
-                }else{
-                    layer.msg('未找到相关股票');
-                }
-            },
-            error:function(data){
-                layer.alert(JSON.stringify(data), {
-                    title: data
-                });
-             }
-        });
-
-    });
-
-
-            var  code = $('#code').attr('d');
-            $.ajax({
-                url:"/stocks/getRelatedStocks",
-                data:{'code':code},
+        if(obj.event === 'del'){
+          layer.confirm('真的删除行么', function(index){
+              $.ajax({
+                url:"/stocks/delRelatedStock",
+                data:{'code':data.code,'orgcode':orgCode,'name':data.name},
                 method:'post',
                 "Content-Type": "application/json;charset=utf8",
                 dataType:"json",
                 success:function(data){
                     if (data.status == 'ok') {
-                        list = data.data;
-                        for(var i = 0;i<list.length;i++ ){
-                            var name = list[i].name;
-                            var code = list[i].code
-                            var value= name+'-'+code;
-                            var url = "http://localhost:5050/stocks/stockDetail/" + code + "/" + name;
-                            var aa = '<a class="item" href=' + '"' + url + '"' + '>' + value + '</a>';
-                            $('#content').append(aa);
-                        }
+                        layer.msg('删除成功');
+                        table.reload('test', {});
 
                     }
                 },
@@ -155,6 +132,90 @@
                     });
                  }
             });
+            obj.del();
+            layer.close(index);
+          });
+        } else if(obj.event === 'update'){
+              $.ajax({
+                url:"/stocks/updateStock",
+                data:data,
+                method:'post',
+                "Content-Type": "application/json;charset=utf8",
+                dataType:"json",
+                success:function(data){
+                    if (data.status == 'ok') {
+                        layer.msg('更新成功');
+                        table.reload('test', {});
+                    }
+                },
+                error:function(data){
+                    layer.alert(JSON.stringify(data), {
+                        title: data
+                    });
+                 }
+            });
+        }else if(obj.event === 'detail'){
+            window.location.href ="http://localhost:5050/stocks/stockDetail/" + data.code + "/" + data.name;
+        }else if(obj.event === 'dongfang'){
+            window.open("https://emweb.securities.eastmoney.com/PC_HSF10/BusinessAnalysis/Index?type=web&code="+data.code, "_blank");
+        }else if(obj.event === 'touzi'){
+            window.open("https://www.touzid.com/company/fundamental.html#/"+data.code, "_blank");
+        }
+        else if(obj.event === 'nianbao'){
+            url = "https://money.finance.sina.com.cn/corp/go.php/vCB_Bulletin/stockid/" +data.code.substring(2)+"/page_type/ndbg.phtml"
+            window.open(url, "_blank");
+        }
+     });
+        //table之后
+        $('#con > fieldset > #content').each(function(){
+            $(this).next().html($(this).text())
+         });
+
+        //编辑修改的按钮
+        $('.edit').on('click', function(){
+            var  code = $('#code').attr('d');
+            var  name = $('#name').attr('d');
+            var seq = $(this).attr('d');
+            window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name +"/" + seq;
+         });
+
+        //添加文章的按钮
+        $('.add').on('click', function(){
+            var  code = $('#code').attr('d');
+            var  name = $('#name').attr('d');
+            var nextseq = $('#nextseq').attr('d');
+            window.location.href ="http://localhost:5050/stocks/stockContentEdit/" + code + "/" + name +"/" + nextseq;
+         });
+
+        $('#addstock').click (function ()
+        {
+            var name = $("#stock").val()
+            var code = $('#code').attr('d');
+            $.ajax({
+                url:"/stocks/addRelatedStock",
+                data:{'name':name,'code':code},
+                method:'post',
+                "Content-Type": "application/json;charset=utf8",
+                dataType:"json",
+                success:function(data){
+                    if (data.status == 'ok') {
+                        layer.msg('更新成功');
+                        table.reload('test', {});
+                        $('#stock').val('');
+                    }else{
+                        layer.msg('未找到相关股票');
+                    }
+                },
+                error:function(data){
+                    layer.alert(JSON.stringify(data), {
+                        title: data
+                    });
+                 }
+            });
+
+        });
+
+
 
 
     });

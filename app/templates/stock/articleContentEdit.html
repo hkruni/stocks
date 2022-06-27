@@ -1,0 +1,62 @@
+{% extends "admin/bases.html" %}
+{% import "admin/fy.html" as pg %}
+
+{% block content %}
+
+<div id="title" d="{{title}}" style="display:none"></div>
+<div id="id" d="{{id}}" style="display:none"></div>
+<div id="content1" d="{{content}}" style="display:none"></div>
+
+<input class="editor" name="content" id="content">
+
+<div class="site-demo-button" style="margin-top: 20px;">
+  <button id = "button" class="layui-btn site-demo-layedit" data-type="content" >提交</button>
+</div>
+
+<script src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tinymce_setup.js') }}"></script>
+
+<script>
+
+
+
+$(document).ready(function(){
+
+    function initData() {
+        var content1 = document.getElementById('content1').getAttribute('d');
+        tinyMCE.activeEditor.setContent(content1);
+    }
+    setTimeout(initData,1000);
+
+
+
+    $("#button").click(function() {
+        var  title = document.getElementById('title').getAttribute('d');
+        var  id = document.getElementById('id').getAttribute('d');
+        var content = tinyMCE.activeEditor.getContent();
+        $.ajax({
+            url:"/stocks/addArticle",
+            data:{"content":content,"title":title,"id":id},
+            method:'post',
+            "Content-Type": "application/json;charset=utf8",
+            dataType:"json",
+            success:function(data){
+                if (data.status == 'ok') {
+                    layer.msg('更新成功');
+                    window.location.href ="http://localhost:5050/stocks/articleContent/" +title;
+                }
+            },
+            error:function(data){
+                layer.alert(JSON.stringify(data), {
+                    title: data
+                });
+             }
+        });
+
+    });
+});
+
+
+</script>
+
+{% endblock %}

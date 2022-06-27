@@ -3,42 +3,54 @@
 {% block content %}
 
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
-     <input id="title" type="text" name="title" value="" class="layui-input" placeholder="请输入标题"></input>
+     <input id="title1" type="text" name="title" value="" class="layui-input" placeholder="请输入标题"></input>
 </fieldset>
+
 <div id="code" d="{{code}}" style="display:none"></div>
 <div id="name" d="{{name}}" style="display:none"></div>
 <div id="seq" d="{{seq}}" style="display:none"></div>
+<div id="title" d="{{title}}" style="display:none"></div>
+<div id="content1" d="{{content}}" style="display:none"></div>
 
+<input class="editor" name="content" id="content">
 <div class="site-demo-button" style="margin-top: 20px;">
-  <button class="layui-btn site-demo-layedit" data-type="content" >提交</button>
+  <button id = "button" class="layui-btn site-demo-layedit" data-type="content1" >提交</button>
 </div>
 
-<textarea id="demo" style="display: none;"></textarea>
 
 
-
+<script src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tinymce_setup.js') }}"></script>
 <script>
 
-layui.use('layedit', function(){
+$(document).ready(function(){
 
-  var layedit = layui.layedit
-  ,$ = layui.jquery;
-  var index = layedit.build('demo',{
-    height: 1000
-  });
+    function initData() {
+        var content = document.getElementById('content1').getAttribute('d');
+        var title = document.getElementById('title').getAttribute('d');
+        $('#title1').attr('value',title);
+        tinyMCE.activeEditor.setContent(content);
+    }
+    setTimeout(initData,1000);
 
-  var  code = document.getElementById('code').getAttribute('d');
-  var  name = document.getElementById('name').getAttribute('d');
-  var  seq = document.getElementById('seq').getAttribute('d');
-    $.ajax({
-            url:"/stocks/stockContent/" + code + "/" + seq,
-            method:'get',
+
+    $("#button").click(function() {
+
+        var  code = document.getElementById('code').getAttribute('d');
+        var  seq = document.getElementById('seq').getAttribute('d');
+        var  name = document.getElementById('name').getAttribute('d');
+        var title = $('#title1').val();
+        var content = tinyMCE.activeEditor.getContent();
+        $.ajax({
+            url:"/stocks/addStockContent",
+            data:{"code":code,"name":name,"content":content,"seq":seq,"title":title},
+            method:'post',
             "Content-Type": "application/json;charset=utf8",
             dataType:"json",
             success:function(data){
                 if (data.status == 'ok') {
-                    $('input').attr('value',data.title);
-                    layedit.setContent(index,data.content)
+                    layer.msg('更新成功');
+                    window.location.href ="http://localhost:5050/stocks/stockDetail/" + code + "/" + name;
                 }
             },
             error:function(data){
@@ -46,42 +58,8 @@ layui.use('layedit', function(){
                     title: data
                 });
              }
+        });
     });
-
-
-
-  var active = {
-    content: function(){
-      var content = layedit.getContent(index)
-      var title = $('#title').val();
-      var text = layedit.getContent(index);
-                    $.ajax({
-                url:"/stocks/addStockContent",
-                data:{"code":code,"name":name,"content":content,"seq":seq,"title":title},
-                method:'post',
-                "Content-Type": "application/json;charset=utf8",
-                dataType:"json",
-                success:function(data){
-                    if (data.status == 'ok') {
-                        layer.msg('更新成功');
-                        window.location.href ="http://localhost:5050/stocks/stockDetail/" + code + "/" + name;
-                    }
-                },
-                error:function(data){
-                    layer.alert(JSON.stringify(data), {
-                        title: data
-                    });
-                 }
-            });
-    }
-  };
-
-  $('.site-demo-layedit').on('click', function(){
-    var type = $(this).data('type');
-    active[type] ? active[type].call(this) : '';
-  });
-
-
 });
 </script>
 {% endblock %}

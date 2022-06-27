@@ -1,0 +1,131 @@
+{% extends "admin/bases.html" %}
+
+{% block content %}
+
+<form class="layui-form" lay-filter="form1" id="form1" style="display: none" >
+  <div class="layui-form-item">
+    <label class="layui-form-label">标题</label>
+    <div class="layui-input-block">
+      <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" id="code">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">链接</label>
+    <div class="layui-input-block">
+      <input type="text" name="url" lay-verify="title" autocomplete="off" placeholder="请输入链接地址" class="layui-input">
+    </div>
+  </div>
+  <input type="text" name="remarks" lautocomplete="off" style="display:none" value="备注">
+</form>
+
+<div id="toolbarDemo" style="display:none">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+  </div>
+</div>
+
+<table  id="test" lay-filter="stocktable"></table>
+
+<script type="text/html" id="operation">
+    <a class="layui-btn layui-btn-xs" lay-event="tiaozhuan" >跳转</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+  layui.use('table', function(){
+
+      var table = layui.table
+      table.render({
+          elem: '#test'
+          ,toolbar: '#toolbarDemo'
+          ,url: '/stocks/dazongUrls'
+          ,page : {
+             layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+           },
+        cols: [[ //表头
+           {field: 'id', title: '序号', width:80, sort: true, fixed: 'left', type:'numbers'}
+          ,{field: 'title', title: '标题', width:200,edit: 'text'}
+          ,{field: 'url', title: '链接地址', width:500,edit: 'text'}
+          ,{field: 'remark', title: '价格', width:80,edit: 'text'}
+          ,{fixed: 'right', title: '操作', toolbar: '#operation', width:400}
+        ]],
+      });
+
+
+              //头工具栏事件
+      table.on('toolbar(stocktable)', function(obj){
+
+            switch(obj.event){
+                case 'add':
+                    layer.open({
+                    type: 1,
+                    content:$('#form1'),
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['370px', '360px'], //宽高
+                    btn: ['添加','取消'],
+                    yes: function (layero,index) {
+                        formData = layui.form.val("form1");
+                        $.ajax({
+                            url:"/stocks/addDazongUrl",
+                            data:formData,
+                            method:'post',
+                            "Content-Type": "application/json;charset=utf8",
+                            dataType:"json",
+                            success:function(data){
+                                if (data.status == 'ok') {
+                                    layer.msg('添加成功');
+                                }
+                                layer.closeAll();
+                                table.reload('test', {});
+                            },
+                            error:function(data){
+                                layer.alert(JSON.stringify(data), {
+                                    title: data
+                                });
+                             }
+                         });
+
+                    }
+                    });
+                    break;
+            }
+
+      });
+
+      table.on('tool(stocktable)', function(obj){
+        var data = obj.data;
+        if(obj.event === 'del'){
+          layer.confirm('真的删除行么', function(index){
+              $.ajax({
+                url:"/stocks/deleteDazongUrl",
+                data:{'url':data.url},
+                method:'post',
+                "Content-Type": "application/json;charset=utf8",
+                dataType:"json",
+                success:function(data){
+                    if (data.status == 'ok') {
+                        layer.msg('删除成功');
+                        table.reload('test', {});
+                    }
+                },
+                error:function(data){
+                    layer.alert(JSON.stringify(data), {
+                        title: data
+                    });
+                 }
+            });
+            obj.del();
+            layer.close(index);
+          });
+        } else if(obj.event === 'tiaozhuan'){
+            window.open(data.url);
+        }
+     });
+
+
+
+  });
+</script>
+
+
+{% endblock %}

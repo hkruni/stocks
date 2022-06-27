@@ -36,47 +36,56 @@
                     </a>
                     <ul class="sub-menu">
                         <li>
-                            <a _href="{{url_for('stocks.stockBasicInfo')}}">
+                            <a _href="{{url_for('stocks.stockBasicInfo',bankuai='meitan')}}">
                                 <i class="iconfont">&#xe6a7;</i>
                                 <cite>煤炭</cite>
-
                             </a>
                         </li >
 
-                             <li>
-                            <a _href="{{url_for('admin.returnOrder',page=1)}}">
+                        <li>
+                             <a _href="{{url_for('stocks.stockBasicInfo',bankuai='youse')}}">
                                 <i class="iconfont">&#xe6a7;</i>
                                 <cite>有色</cite>
-
                             </a>
                         </li >
                         <li>
-                            <a _href="{{url_for('admin.categoryOfGoods',page=1)}}">
+                             <a _href="{{url_for('stocks.stockBasicInfo',bankuai='jungong')}}">
                                 <i class="iconfont">&#xe6a7;</i>
                                 <cite>军工</cite>
                             </a>
                         </li >
                         <li>
-                            <a _href="{{url_for('admin.suppliers',page=1)}}">
+                             <a _href="{{url_for('stocks.stockBasicInfo',bankuai='guangfu')}}">
+                                <i class="iconfont">&#xe6a7;</i>
+                                <cite>光伏</cite>
+                            </a>
+                        </li >
+                        <li>
+                             <a _href="{{url_for('stocks.stockBasicInfo',bankuai='xinnengyuan')}}">
                                 <i class="iconfont">&#xe6a7;</i>
                                 <cite>新能源</cite>
-
                             </a>
-                        </li>
+                        </li >
+                        <li>
+                             <a _href="{{url_for('stocks.stockBasicInfo',bankuai='bandaoti')}}">
+                                <i class="iconfont">&#xe6a7;</i>
+                                <cite>半导体</cite>
+                            </a>
+                        </li >
                     </ul>
              </li>
 
             <li>
                  <a href="javascript:;">
                     <i class="iconfont">&#xe70b;</i>
-                    <cite>系统管理</cite>
+                    <cite>大宗商品</cite>
                     <i class="iconfont nav_right">&#xe697;</i>
                 </a>
                 <ul class="sub-menu">
                     <li>
-                        <a _href="{{url_for('admin.beifen')}}">
+                        <a _href="{{url_for('stocks.dazongindex')}}">
                             <i class="iconfont">&#xe6a7;</i>
-                            <cite>备份数据</cite>
+                            <cite>有色</cite>
                         </a>
                     </li >
                 </ul>
